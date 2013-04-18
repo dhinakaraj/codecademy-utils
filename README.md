@@ -1,4 +1,3 @@
-codecademy-utils
-================
+# Codecademy Utils
 
-Scripts used to support the OpenTok tutorial on CodeCademy
+Scripts that support the [OpenTok lesson](#) on Codecademy
