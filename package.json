@@ -18,6 +18,10 @@
     "grunt-contrib-handlebars": "~0.5.8",
     "grunt-contrib-copy": "~0.4.1",
     "grunt-contrib-clean": "~0.4.1",
-    "grunt-contrib-uglify": "~0.2.1"
+    "grunt-contrib-uglify": "~0.2.1",
+    "grunt-css2js": "git://github.com/aoberoi/grunt-css2js.git",
+    "grunt-contrib-compass": "~0.2.0",
+    "grunt-shell": "~0.2.2",
+    "grunt-build-gh-pages": "0.0.4"
   }
 }
