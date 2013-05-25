@@ -4,17 +4,43 @@
 
 body {
   margin:0;
+  font-size: 16px;
 }
 
 #internal-ui {
-  background: rgb(60, 133, 155);
-  color: white;
+  .bar {
+    background: rgb(60, 133, 155);
+    color: white;
+    font-size: 1.5em;
+    padding: 1em 0;
+
+    p {
+      margin: 0;
+    }
+  }
 
   .container {
-    width: 540px;
-    @media screen and (max-width: 540px) {
-      width: 100%;
-    }
-    margin: 0 auto;
+    //width: 540px;
+    //@media screen and (max-width: 540px) {
+    //  width: 100%;
+    //}
+    //margin: 0 auto;
+    position: relative;
+  }
+
+  .logo {
+    position: absolute;
+    top:0;
+    left:0;
+  }
+
+  .links {
+    position: absolute;
+    top:0;
+    right:0;
+  }
+
+  .lesson-title {
+    text-align: center;
   }
 }
