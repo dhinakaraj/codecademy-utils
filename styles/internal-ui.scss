@@ -1,4 +1,15 @@
+/*
+ * The default page width is 576. The default styles have a margin:8px body.
+ */
+
+body {
+  margin:0;
+}
+
 #internal-ui {
+  background: rgb(60, 133, 155);
+  color: white;
+
   .container {
     width: 540px;
     @media screen and (max-width: 540px) {
