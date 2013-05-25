@@ -54,7 +54,7 @@ module.exports = function(grunt) {
       gh: {
         options: {
           exclude: ['node_modules', '.sass-cache']
-        }`
+        }
       }
     }
   });
