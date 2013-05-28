@@ -131,6 +131,10 @@ body {
 
   font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
 
+  p {
+    margin: 0;
+  }
+
   .bar {
     background: rgb(60, 133, 155);
     color: white;
@@ -140,9 +144,6 @@ body {
 
     @include box-shadow();
 
-    p {
-      margin: 0;
-    }
   }
 
   .container {
@@ -196,6 +197,20 @@ body {
     }
     .bar {
       height: 1.2em;
+    }
+  }
+
+  .output {
+    background: #ccc;
+    border: 1px solid #999;
+    padding: 5px;
+    border-radius: 3px;
+    margin-top: 1em;
+
+    &.error {
+      color: #a33;
+      background: #fcc;
+      border-color: #a66;
     }
   }
 }
