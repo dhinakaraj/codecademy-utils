@@ -77,7 +77,8 @@ module.exports = function(grunt) {
             'build/js/handlebars.runtime.js',
             'build/js/templates.js',
             'build/js/internal-ui.css.js',
-            'build/js/build_html.js'
+            'build/js/build_html.js',
+            'build/js/async_test.js'
           ]
         }
       },
@@ -87,7 +88,8 @@ module.exports = function(grunt) {
             'dist/js/handlebars.runtime.js',
             'dist/js/templates.js',
             'dist/js/internal-ui.css.js',
-            'dist/js/build_html.js'
+            'dist/js/build_html.js',
+            'dist/js/async_test.js'
           ]
         }
       }
