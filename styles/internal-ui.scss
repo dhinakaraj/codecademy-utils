@@ -7,6 +7,21 @@ body {
   font-size: 14px;
 }
 
+%ir {
+  background-color: transparent;
+  border: 0;
+  overflow: hidden;
+  /* IE 6/7 fallback */
+  *text-indent: -9999px;
+
+  &:before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 150%;
+  }
+}
+
 #internal-ui {
   font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
 
@@ -38,7 +53,14 @@ body {
 
   .logo {
     @extend %bar-decoration;
+    @extend %ir;
+    top: -8px;
     left:0;
+    width: 130px;
+    height: 42px;
+    //background: url('http://localhost:8000/dist/img/logo.png');
+    //background: url('dist/img/logo.png');
+    background: image-url('logo.png');
   }
 
   .links {

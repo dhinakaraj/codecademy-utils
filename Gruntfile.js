@@ -17,14 +17,29 @@ module.exports = function(grunt) {
         options: {              // Target options
           sassDir: 'styles',
           cssDir: 'build/css',
-          environment: 'production'
+          environment: 'production',
+          imagesDir: 'dist/img'
+        }
+      },
+      dist: {                   // Target
+        options: {              // Target options
+          sassDir: 'styles',
+          cssDir: 'build/css',
+          environment: 'production',
+          httpImagesPath: 'http://opentok.github.io/codecademy-utils/img'
         }
       },
     },
     copy: {
       build: {
         files: [
-          {src: ['scripts/*.js'], dest: 'build/js/', expand:true, flatten:true}
+          {src: ['scripts/*.js'], dest: 'build/js/', expand:true, flatten:true},
+          {src: ['images/*'], dest: 'build/img/', expand:true, flatten:true}
+        ]
+      },
+      dist: {
+        files: [
+          {src: ['build/img/*'], dest: 'dist/img/', expand:true, flatten:true}
         ]
       }
     },
@@ -68,8 +83,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-build-gh-pages');
 
 
-  grunt.registerTask('default', ['clean:build', 'handlebars:build', 'compass:build', 'css2js:build', 'copy:build']);
-  grunt.registerTask('dist', ['default', 'clean:dist', 'uglify:dist']);
+  grunt.registerTask('default', ['clean:build', 'handlebars:build', 'compass:dist', 'css2js:build', 'copy:build']);
+  grunt.registerTask('dist', ['default', 'clean:dist', 'uglify:dist', 'copy:dist']);
   grunt.registerTask('gh', ['dist', 'build_gh_pages:gh']);
 
 };
