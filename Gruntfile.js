@@ -10,6 +10,14 @@ module.exports = function(grunt) {
         files: {
           "build/js/templates.js": ["templates/*.hbs"]
         }
+      },
+      dist: {
+        options: {
+          namespace: "JST"
+        },
+        files: {
+          "dist/js/templates.js": ["templates/*.hbs"]
+        }
       }
     },
     compass: {
@@ -18,17 +26,17 @@ module.exports = function(grunt) {
           sassDir: 'styles',
           cssDir: 'build/css',
           environment: 'production',
-          imagesDir: 'dist/img'
+          imagesDir: 'images'
         }
       },
       dist: {                   // Target
         options: {              // Target options
           sassDir: 'styles',
-          cssDir: 'build/css',
+          cssDir: 'dist/css',
           environment: 'production',
           httpImagesPath: 'http://opentok.github.io/codecademy-utils/img'
         }
-      },
+      }
     },
     copy: {
       build: {
@@ -39,6 +47,7 @@ module.exports = function(grunt) {
       },
       dist: {
         files: [
+          {src: ['scripts/*.js'], dest: 'dist/js/', expand:true, flatten:true},
           {src: ['build/img/*'], dest: 'dist/img/', expand:true, flatten:true}
         ]
       }
@@ -51,16 +60,34 @@ module.exports = function(grunt) {
       build: {
         src: 'build/css/internal-ui.css',
         dest: 'build/js/internal-ui.css.js'
+      },
+      dist: {
+        src: 'dist/css/internal-ui.css',
+        dest: 'dist/js/internal-ui.css.js'
       }
     },
     uglify: {
-      dist: {
+      build: {
+        options: {
+          beautify: true,
+          compress: false
+        },
         files: {
-          'dist/js/build_html.js' : [
+          'build/js/main.js' : [
             'build/js/handlebars.runtime.js',
             'build/js/templates.js',
             'build/js/internal-ui.css.js',
             'build/js/build_html.js'
+          ]
+        }
+      },
+      dist: {
+        files: {
+          'dist/js/main.js' : [
+            'dist/js/handlebars.runtime.js',
+            'dist/js/templates.js',
+            'dist/js/internal-ui.css.js',
+            'dist/js/build_html.js'
           ]
         }
       }
@@ -83,8 +110,17 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-build-gh-pages');
 
 
-  grunt.registerTask('default', ['clean:build', 'handlebars:build', 'compass:dist', 'css2js:build', 'copy:build']);
-  grunt.registerTask('dist', ['default', 'clean:dist', 'uglify:dist', 'copy:dist']);
+  grunt.registerTask('default', 'build');
+
+  // build task puts the site together in the build directory
+  // (using local url's and without any serious minfication)
+  grunt.registerTask('build', ['clean:build', 'handlebars:build', 'compass:build',
+                               'css2js:build', 'copy:build', 'uglify:build']);
+
+  // dist task puts the site together in the dist directory
+  grunt.registerTask('dist', ['clean:dist', 'handlebars:dist', 'compass:dist',
+                              'css2js:dist', 'copy:dist', 'uglify:dist']);
+
   grunt.registerTask('gh', ['dist', 'build_gh_pages:gh']);
 
 };
