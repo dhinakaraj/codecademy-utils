@@ -1,3 +1,4 @@
 dist/
 build/
 .sass-cache/
+scripts/scts/exercise-1/test.js
