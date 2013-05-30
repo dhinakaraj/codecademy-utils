@@ -38,12 +38,12 @@ var AsyncTest = {
             if (this.logger) { console.log('Waiting on ' + this.waitEvents.length + ' events'); }
             // Test Completion Handler
             $expect(window).on(this.internalEvent, function(event, externalEvent, passed, message) {
-                if (this.logger) { console.log('Event \'' + externalEvent + '\' triggered with: ' + passed + ', ' + message); }
+                if (self.logger) { console.log('Event \'' + externalEvent + '\' triggered with: ' + passed + ', ' + message); }
 
                 // A fail short circuits the evaluation
-                if (!passed || event === this.forceFailEvent) {
+                if (!passed || event === self.forceFailEvent) {
                     // Force a fail and show custom message
-                    if (this.logger) { console.log('Event ' + externalEvent + ' failed!'); }
+                    if (self.logger) { console.log('Event ' + externalEvent + ' failed!'); }
                     // TODO: indicate a failure in the UI
                     $expect('html').to.be.empty(message);
                 } else {
