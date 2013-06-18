@@ -75,10 +75,10 @@ module.exports = function(grunt) {
         },
         files: {
           'build/js/main.js' : [
-            'build/js/handlebars.runtime.js',
-            'build/js/templates.js',
-            'build/js/internal-ui.css.js',
-            'build/js/build_html.js',
+            //'build/js/handlebars.runtime.js',
+            //'build/js/templates.js',
+            //'build/js/internal-ui.css.js',
+            //'build/js/build_html.js',
             'build/js/async_test.js'
           ]
         }
@@ -86,10 +86,10 @@ module.exports = function(grunt) {
       dist: {
         files: {
           'dist/js/main.js' : [
-            'dist/js/handlebars.runtime.js',
-            'dist/js/templates.js',
-            'dist/js/internal-ui.css.js',
-            'dist/js/build_html.js',
+            //'dist/js/handlebars.runtime.js',
+            //'dist/js/templates.js',
+            //'dist/js/internal-ui.css.js',
+            //'dist/js/build_html.js',
             'dist/js/async_test.js'
           ]
         }
