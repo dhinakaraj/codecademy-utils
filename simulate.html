@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>OpenTok API Sample &#8212; Basic Tutorial</title>
+  <link href="samples.css" type="text/css" rel="stylesheet" >
+  <script src="http://static.opentok.com/webrtc/v2.0/js/TB.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.ba-bbq/1.2.1/jquery.ba-bbq.min.js"></script>
+</head>
+<body>
+  <script type="text/javascript" charset="utf-8">
+    var MY_API_KEY = hash.apiKey || null;
+    var MY_SESSION_ID = hash.sessionId || null;
+    var MY_TOKEN = hash.token || null;
+
+    // Create a session
+    var session = TB.initSession(MY_SESSION_ID);
+
+    // Connect to the session
+    session.connect(MY_API_KEY, MY_TOKEN);
+
+    // TODO: subscribe to an array of streams
+    function subscribeStreams(streams) {
+      streams.forEach(function(stream) {
+        if (stream.connection.connectionId == session.connection.connectionId) {
+          return;
+        }
+        session.subscribe(stream, createSubscriberElement(stream));
+      });
+    }
+
+    // Handler for the sessionConnected event
+    function sessionConnectedHandler(event) {
+        // Create a Publisher
+        var publisher = TB.initPublisher(MY_API_KEY, 'myCam');
+
+        // Publish to the Session
+        session.publish(publisher);
+
+        subscribeStreams(event.streams);
+    }
+
+    // Listen to the 'sessionConnected' event
+    session.addEventListener('sessionConnected', sessionConnectedHandler);
+
+    // Handler for the streamCreated event
+    function streamCreatedHandler(event) {
+        subscribeStreams(event.streams);
+    }
+
+    // Listen to the 'streamCreated' event
+    session.addEventListener('streamCreated', streamCreatedHandler);
+
+    // Helper function to create a new element on the page
+    // based on a stream's own streamId
+    function createSubscriberElement(stream) {
+        var id = 'sub-' + stream.streamId;
+        $('<div id="'+id+'">').appendTo('#subscribers');
+        return id;
+    }
+  </script>
+  <div id="myCam"></div>
+  <div id="subscribers"></div>
+</body>
+</html>
+

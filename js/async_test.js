@@ -37,7 +37,7 @@ var AsyncTest = {
         if (this.waitEvents.length > 0) {
             if (this.logger) { console.log('Waiting on ' + this.waitEvents.length + ' events'); }
             // Test Completion Handler
-            $expect(window).on(this.internalEvent, function(event, externalEvent, passed, message) {
+            $expect(window).on(self.internalEvent, function(event, externalEvent, passed, message) {
                 if (self.logger) { console.log('Event \'' + externalEvent + '\' triggered with: ' + passed + ', ' + message); }
 
                 // A fail short circuits the evaluation
