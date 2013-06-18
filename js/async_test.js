@@ -1,3 +1,9 @@
+// TODO: show some sort of waiting thing when there are failOnTimeout tests waiting
+// TODO: start timeout after some begin() function is called
+// TODO: catch TB.exception and disconnects to trigger fails
+// TODO: uncaught referenceerror's are not clearly reported
+// TODO: show the failure messages
+
 /*
   @class Async Tester
   This object is used to queue up multiple async events and wait on all of them before
@@ -11,6 +17,7 @@ var AsyncTest = {
     waitEvents: [],
     forceFailEvent: 'opentok_async_fail_event',
     resultsText: 'All done!',
+    timeout: 10000,
 
     // Add event to queue. All events added must be triggered with a pass before the
     // exercise is completed.
@@ -37,11 +44,11 @@ var AsyncTest = {
         if (this.waitEvents.length > 0) {
             if (this.logger) { console.log('Waiting on ' + this.waitEvents.length + ' events'); }
             // Test Completion Handler
-            $expect(window).on(self.internalEvent, function(event, externalEvent, passed, message) {
+            $expect(window).on(this.internalEvent, function(event, externalEvent, passed, message) {
                 if (self.logger) { console.log('Event \'' + externalEvent + '\' triggered with: ' + passed + ', ' + message); }
 
                 // A fail short circuits the evaluation
-                if (!passed || event === self.forceFailEvent) {
+                if (( !passed && self.waitEvents.indexOf(externalEvent) != -1 ) || event === self.forceFailEvent) {
                     // Force a fail and show custom message
                     if (self.logger) { console.log('Event ' + externalEvent + ' failed!'); }
                     // TODO: indicate a failure in the UI
@@ -67,6 +74,11 @@ var AsyncTest = {
         if (typeof(message) === 'undefined') {
             message = '';
         }
+
+        console.log('triggering event ' + eventName + ' with passed: ' + (passed ? 'true' : 'false'));
+        console.log('this is:');
+        console.log(this);
+
         // Trigger the event
         $(window).trigger(this.internalEvent, [eventName, passed, message]);
     },
@@ -79,25 +91,214 @@ var AsyncTest = {
         }
         // Fail this exercise
         $(window).trigger(this.internalEvent, [this.forceFailEvent, false, message]);
+    },
+
+    // Creates element on page corresponding to this test
+    addTest: function(testEvent, displayName, failOnTimeout, passOnTimeout) {
+        $('<li id="'+testEvent+'">'+displayName+'</li>').appendTo('#testing');
+        this.waitOn(testEvent);
+        if (failOnTimeout || passOnTimeout) {
+            setTimeout(function() {
+                if (failOnTimeout) {
+                    if (AsyncTest.waitEvents.indexOf(testEvent) != -1) {
+                        AsyncTest.failTest(testEvent, 'The test ' + testEvent + ' was not completed');
+                    }
+                } else {
+                    AsyncTest.passTest(testEvent);
+                }
+            }, this.timeout);
+        }
+    },
+
+    // Makes the element for this test look pretty
+    passTest: function(testEvent) {
+        $('#'+testEvent).css('color', 'green');
+        AsyncTest.triggerEvent(testEvent, true);
+    },
+
+    // Makes the element for this test look sad
+    failTest: function(testEvent, message) {
+        $('#'+testEvent).css('color', 'red');
+        AsyncTest.triggerEvent(testEvent, false, message);
+    },
+
+    init: function() {
+        // Set up the test reporting area on the page
+        $('<ul id="testing"></ul>').appendTo('body');
+    },
+
+    instrument: function() {
+        setTimeout(function() {
+            if (typeof TB == 'object') {
+
+                AsyncTest.passTest('defineTB');
+
+                // Shell that holds plucked methods from original TB
+                var _TB = {};
+
+                // --- sessionInitialized
+                _TB.initSession = $.proxy(TB.initSession, TB);
+                TB.initSession = function(sessionId) {
+                    var newSession;
+
+                    // check args
+                    if (typeof sessionId != 'string') {
+                        AsyncTest.failTest('sessionInitialized',
+                            'You passed in an invalid parameter to TB.initSession(). This method only takes a String.'
+                        );
+                        return;
+                    }
+                    if (sessionId.length < 80 || sessionId.length > 82) {
+                        AsyncTest.failTest('sessionInitialized', 'The sessionId passed to TB.initSession() is not valid');
+                        console.log(sessionId);
+                    }
+                    // trigger success
+                    AsyncTest.passTest('sessionInitialized');
+
+                    // call the real method
+                    newSession = _TB.initSession(sessionId);
+                    instrumentSession(newSession);
+                    return newSession;
+                }
+
+                //--- publisherInitialized
+                _TB.initPublisher = $.proxy(TB.initPublisher, TB);
+                TB.initPublisher = function(apiKey, elementId) {
+                    // check args
+                    if (typeof apiKey != 'string' && typeof apiKey != 'number') {
+                        AsyncTest.failTest('publisherInitialized',
+                            'You passed in an invalid apiKey parameter to TB.initPublisher(). This parameter must be a String.'
+                        );
+                        return;
+                    }
+
+                    if (elementId !== 'myCam') {
+                        AsyncTest.failTest('publisherInitialized',
+                            'You passed an invalid replacementElementid to TB.initPublisher().'
+                        );
+                        return;
+                    }
+
+                    AsyncTest.passTest('publisherInitialized');
+
+                    // TODO: reminder to click allow
+
+                    return _TB.initPublisher(apiKey, elementId);
+                }
+            } else {
+              AsyncTest.failTest('defineTB', 'TB is not defined');
+            }
+
+            //--- publisherElement
+            if ($('#myCam').length === 1) {
+                AsyncTest.passTest('publisherElement');
+            } else {
+                AsyncTest.failTest('publisherElement', 'An element with the id of "myCam" was not found.');
+            }
+
+            //--- subscriberElement
+            if ($('#subscribers').length === 1) {
+                AsyncTest.passTest('subscriberElement');
+            } else {
+                AsyncTest.failTest('subscriberElement', 'An element with the id of "subscribers" was not found.');
+            }
+        }, 1);
+
+        function instrumentSession(session) {
+            var streams = [];
+            console.log('instrumenting session');
+
+            //--- addEventListener
+            var _addEventListener = $.proxy(session.addEventListener, session);
+            session.addEventListener = function(eventName, callback) {
+                if (eventName === 'sessionConnected' && callback.name == 'sessionConnectedHandler') {
+                  AsyncTest.passTest('sessionConnectedHandler');
+                }
+                if (eventName === 'streamCreated' && callback.name == 'streamCreatedHandler') {
+                  AsyncTest.passTest('streamCreatedHandler');
+                }
+                _addEventListener(eventName, callback);
+            };
+
+
+            //--- sessionConnected
+            var _connect = $.proxy(session.connect, session);
+            session.connect = function(apiKey, token) {
+                    // check args
+                    if (typeof apiKey != 'string' && typeof apiKey != 'number') {
+                            AsyncTest.failTest('sessionConnected',
+                                'You passed in an invalid apiKey parameter to session.connect(). This parameter must be a String.'
+                            );
+                            return;
+                    }
+                    if (typeof token != 'string') {
+                            AsyncTest.failTest('sessionConnected',
+                                'You passed in an invalid token parameter to session.connect(). This parameter must be a String.'
+                            );
+                            return;
+                    }
+                    _connect(apiKey, token);
+            };
+
+            //--- subscribe
+            var _subscribe = $.proxy(session.subscribe, session);
+            session.subscribe = function(stream, elementId) {
+                // check args
+                if (typeof stream != 'object' && typeof stream.streamId != 'string') {
+                    AsyncTest.failTest('subscribeToStreams',
+                        'You passed in an invalid stream parameter to session.subscribe(). This parameter must be a Stream.'
+                    );
+                    return;
+                }
+                if (typeof elementId != 'string') {
+                    AsyncTest.failTest('subscribeToStreams',
+                        'You passed in an invalid replacementElementId parameter to session.subscribe(). This parameter must be a String.'
+                    );
+                    return;
+                }
+
+                if (stream.connection.connectionId == session.connection.connectionId) {
+                    AsyncTest.failTest('excludeOwnStream',
+                        'You tried to subscribe to your own stream. Exclude it using the condition described.'
+                    );
+                    return;
+                } else {
+                    AsyncTest.passTest('subscribeOtherStream');
+                }
+
+                var streamIndex = streams.indexOf(stream.streamId);
+                if (streamIndex == -1) {
+                    console.log('impossible! could not find ' + stream.streamId);
+                } else {
+                    // remove from array
+                    streams.splice(streamIndex, 1);
+                }
+
+                return _subscribe(stream, elementId);
+            };
+
+            session.addEventListener('sessionConnected', function(e) {
+                    AsyncTest.passTest('sessionConnected');
+            });
+            session.addEventListener('streamCreated', function(e) {
+                console.log('stream created internal handler');
+                e.streams.forEach(function(stream) {
+                    if (stream.connection.connectionId == session.connection.connectionId) {
+                        AsyncTest.passTest('publishedStream');
+                    } else {
+                        streams.push(stream.streamId);
+                        console.log('pushed streamId ' + stream.streamId);
+                    }
+                });
+                setTimeout(function() {
+                    if (streams.length != 0) {
+                        AsyncTest.failTest('subscribeToStreams',
+                            'You did not subscribe to all of the streams. Check your iteration.'
+                        );
+                    }
+                }, 1);
+            });
+        }
     }
 };
 
-/*
-// Sample implementation
-
-// Declare which tests you want to wait on
-AsyncTest.waitOn('eventName');
-// Just a function that starts all the testing in one place
-AsyncTest.setTest(startTesting);
-// Complete the set up
-AsyncTest.startWaiting();
-
-function startTesting() {
-  el.on('asyncEvent', function(result) {
-    // Complete the actual test
-    AsyncTest.triggerEvent('eventName', isValid(result), 'Failure message');
-  });
-}
-*/
-
-console.log('6:42');
