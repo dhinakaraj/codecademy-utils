@@ -48,7 +48,8 @@ module.exports = function(grunt) {
       dist: {
         files: [
           {src: ['scripts/*.js'], dest: 'dist/js/', expand:true, flatten:true},
-          {src: ['images/*'], dest: 'dist/img/', expand:true, flatten:true}
+          {src: ['images/*'], dest: 'dist/img/', expand:true, flatten:true},
+          {src: ['pages/*'], dest: 'dist/', expand:true, flatten:true}
         ]
       }
     },
