@@ -51,8 +51,7 @@
     // Listen to the 'streamCreated' event
     session.addEventListener('streamCreated', streamCreatedHandler);
 
-    // Helper function to create a new element on the page
-    // based on a stream's own streamId
+    // Helper function to create a new element on the page based on a stream's own streamId
     function createSubscriberElement(stream) {
         var id = 'sub-' + stream.streamId;
         $('<div id="'+id+'">').appendTo('#subscribers');
