@@ -19,7 +19,7 @@
     // Connect to the session
     session.connect(MY_API_KEY, MY_TOKEN);
 
-    // TODO: subscribe to an array of streams
+    // Subscribe to an array of streams
     function subscribeStreams(streams) {
       streams.forEach(function(stream) {
         if (stream.connection.connectionId == session.connection.connectionId) {
