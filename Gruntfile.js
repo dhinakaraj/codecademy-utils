@@ -59,12 +59,12 @@ module.exports = function(grunt) {
     },
     css2js: {
       build: {
-        src: 'build/css/internal-ui.css',
-        dest: 'build/js/internal-ui.css.js'
+        src: 'build/css/*.css',
+        dest: 'build/js/main.css.js'
       },
       dist: {
-        src: 'dist/css/internal-ui.css',
-        dest: 'dist/js/internal-ui.css.js'
+        src: 'dist/css/*.css',
+        dest: 'dist/js/main.css.js'
       }
     },
     uglify: {
@@ -79,6 +79,8 @@ module.exports = function(grunt) {
             //'build/js/templates.js',
             //'build/js/internal-ui.css.js',
             //'build/js/build_html.js',
+            'build/js/spin.js',
+            'build/js/jquery.spin.js',
             'build/js/async_test.js'
           ]
         }
@@ -90,6 +92,8 @@ module.exports = function(grunt) {
             //'dist/js/templates.js',
             //'dist/js/internal-ui.css.js',
             //'dist/js/build_html.js',
+            'build/js/spin.js',
+            'build/js/jquery.spin.js',
             'dist/js/async_test.js'
           ]
         }

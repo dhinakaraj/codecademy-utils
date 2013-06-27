@@ -1,0 +1,33 @@
+#testing {
+  border-radius: 5px;
+  background: #aac;
+  border: 1px solid #666;
+  padding: 10px 20px;
+  color: #333;
+  ul {
+    list-style: none;
+  }
+  li {
+    position: relative;
+  }
+  .icon {
+    position: absolute;
+    top:0;
+    left: -25px;
+    height: 20px;
+    width: 20px;
+    color: #333;
+  }
+  .pass .icon:after {
+    color: green;
+    content: "\2713";
+  }
+  .fail .icon:after {
+    color: red;
+    content: "\2717";
+  }
+  .fail-reason {
+    margin-left: 2em;
+    color: red;
+  }
+}
