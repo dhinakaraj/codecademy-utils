@@ -79,6 +79,7 @@ module.exports = function(grunt) {
             //'build/js/templates.js',
             //'build/js/internal-ui.css.js',
             //'build/js/build_html.js',
+            'build/js/main.css.js',
             'build/js/spin.js',
             'build/js/jquery.spin.js',
             'build/js/async_test.js'
@@ -92,6 +93,7 @@ module.exports = function(grunt) {
             //'dist/js/templates.js',
             //'dist/js/internal-ui.css.js',
             //'dist/js/build_html.js',
+            'dist/js/main.css.js',
             'dist/js/spin.js',
             'dist/js/jquery.spin.js',
             'dist/js/async_test.js'
