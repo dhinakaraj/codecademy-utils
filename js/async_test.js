@@ -1,8 +1,6 @@
-// TODO: show some sort of waiting thing when there are failOnTimeout tests waiting
 // TODO: start timeout after some begin() function is called
 // TODO: catch TB.exception and disconnects to trigger fails
 // TODO: uncaught referenceerror's are not clearly reported
-// TODO: show the failure messages
 
 /*
   @class Async Tester
@@ -95,7 +93,15 @@ var AsyncTest = {
 
     // Creates element on page corresponding to this test
     addTest: function(testEvent, displayName, failOnTimeout, passOnTimeout) {
-        $('<li id="'+testEvent+'">'+displayName+'</li>').appendTo('#testing');
+    //addTest: function(testEvent, displayName, timeoutProp) {
+
+     // {
+     //   time: 10000,
+     //   eventDependent: 'eventName',
+     //   passOrFail: 'pass'
+     // }
+
+        $('<li id="'+testEvent+'"><span class="icon"></span><p class="display-name">'+displayName+'</p></li>').appendTo('#testing');
         this.waitOn(testEvent);
         if (failOnTimeout || passOnTimeout) {
             setTimeout(function() {
@@ -112,19 +118,31 @@ var AsyncTest = {
 
     // Makes the element for this test look pretty
     passTest: function(testEvent) {
-        $('#'+testEvent).css('color', 'green');
+        $('#'+testEvent).attr('class', '');
+        $('#'+testEvent).addClass('pass');
+        AsyncTest.updateUI();
         AsyncTest.triggerEvent(testEvent, true);
     },
 
     // Makes the element for this test look sad
     failTest: function(testEvent, message) {
-        $('#'+testEvent).css('color', 'red');
+        $('#'+testEvent).attr('class', '');
+        $('#'+testEvent).addClass('fail');
+        $('<p class="fail-reason">'+message+'</p>').appendTo('#'+testEvent)
+        AsyncTest.updateUI();
         AsyncTest.triggerEvent(testEvent, false, message);
     },
 
     init: function() {
         // Set up the test reporting area on the page
-        $('<ul id="testing"></ul>').appendTo('body');
+        $('<div id="testing"><h4>Test Results</h4><ul></ul></div>').appendTo('body');
+        AsyncTest.updateUI();
+    },
+
+    updateUI: function() {
+        $('#testing .icon').spin('tiny');
+        $('#testing .pass .icon').spin(false);
+        $('#testing .fail .icon').spin(false);
     },
 
     instrument: function() {
