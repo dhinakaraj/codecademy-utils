@@ -1,5 +1,4 @@
 // TODO: start timeout after some begin() function is called
-// TODO: catch TB.exception and disconnects to trigger fails
 // TODO: uncaught referenceerror's are not clearly reported
 
 /*
@@ -203,6 +202,11 @@ var AsyncTest = {
 
                     return _TB.initPublisher(apiKey, elementId);
                 }
+
+                //--- TBexception
+                TB.addEventListener('exception', function(event) {
+                  AsyncTest.fail(event.message);
+                });
             } else {
               AsyncTest.failTest('defineTB', 'TB is not defined');
             }
