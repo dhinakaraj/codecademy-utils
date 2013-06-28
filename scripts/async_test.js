@@ -44,6 +44,7 @@ var AsyncTest = {
             $expect(window).on(this.internalEvent, function(event, externalEvent, passed, message) {
                 if (self.logger) { console.log('Event \'' + externalEvent + '\' triggered with: ' + passed + ', ' + message); }
 
+                debugger;
                 // A fail short circuits the evaluation
                 if (( !passed && self.waitEvents.indexOf(externalEvent) != -1 ) || externalEvent === self.forceFailEvent) {
                     // Force a fail and show custom message
