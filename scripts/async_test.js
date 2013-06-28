@@ -45,7 +45,7 @@ var AsyncTest = {
                 if (self.logger) { console.log('Event \'' + externalEvent + '\' triggered with: ' + passed + ', ' + message); }
 
                 // A fail short circuits the evaluation
-                if (( !passed && self.waitEvents.indexOf(externalEvent) != -1 ) || event === self.forceFailEvent) {
+                if (( !passed && self.waitEvents.indexOf(externalEvent) != -1 ) || externalEvent === self.forceFailEvent) {
                     // Force a fail and show custom message
                     if (self.logger) { console.log('Event ' + externalEvent + ' failed!'); }
                     // TODO: indicate a failure in the UI
