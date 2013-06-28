@@ -1,5 +1,4 @@
 // TODO: start timeout after some begin() function is called
-// TODO: catch TB.exception and disconnects to trigger fails
 // TODO: uncaught referenceerror's are not clearly reported
 
 /*
@@ -12,7 +11,7 @@
 var AsyncTest = {
     logger: true, // turn off in prod
     internalEvent: 'opentok_async_test_event',
-    waitEvents: [],
+    waitEvents: ["referenceError"],
     forceFailEvent: 'opentok_async_fail_event',
     resultsText: 'All done!',
     timeout: 10000,
@@ -74,8 +73,6 @@ var AsyncTest = {
         }
 
         console.log('triggering event ' + eventName + ' with passed: ' + (passed ? 'true' : 'false'));
-        console.log('this is:');
-        console.log(this);
 
         // Trigger the event
         $(window).trigger(this.internalEvent, [eventName, passed, message]);
@@ -203,6 +200,11 @@ var AsyncTest = {
 
                     return _TB.initPublisher(apiKey, elementId);
                 }
+
+                //--- TBexception
+                TB.addEventListener('exception', function(event) {
+                  AsyncTest.fail(event.message);
+                });
             } else {
               AsyncTest.failTest('defineTB', 'TB is not defined');
             }
