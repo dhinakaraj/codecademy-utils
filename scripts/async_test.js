@@ -11,7 +11,7 @@
 var AsyncTest = {
     logger: true, // turn off in prod
     internalEvent: 'opentok_async_test_event',
-    waitEvents: [],
+    waitEvents: ["referenceError"],
     forceFailEvent: 'opentok_async_fail_event',
     resultsText: 'All done!',
     timeout: 10000,
@@ -73,8 +73,6 @@ var AsyncTest = {
         }
 
         console.log('triggering event ' + eventName + ' with passed: ' + (passed ? 'true' : 'false'));
-        console.log('this is:');
-        console.log(this);
 
         // Trigger the event
         $(window).trigger(this.internalEvent, [eventName, passed, message]);
