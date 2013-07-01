@@ -11,7 +11,7 @@
 var AsyncTest = {
     logger: true, // turn off in prod
     internalEvent: 'opentok_async_test_event',
-    waitEvents: ["referenceError"],
+    waitEvents: [],
     forceFailEvent: 'opentok_async_fail_event',
     resultsText: 'All done!',
     timeout: 10000,
